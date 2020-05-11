@@ -24,7 +24,14 @@ server.get('/accounts', (req, res) =>{
 
 //get a specific account
 server.get('/accounts/:id', (req, res) =>{
-
+    db.select(`*`)
+        .from('accounts')
+        .where({id: req.params.id})
+        .then(account => {
+            res.status(200).json({data: account})
+        }).catch(err => {
+            res.status(500).json({message: "Error fetching account", error: err})
+        })
 })
 
 //create a new account
