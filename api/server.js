@@ -56,7 +56,7 @@ server.post('/accounts', validateAccount, (req, res) =>{
 server.put('/accounts/:id', validateAccount, (req, res) =>{
     db('accounts')
         .where({id: req.params.id})
-        .update(req.body)
+        .update({...req.body, id: req.params.id})
         .then(count => {
             res.status(200).json({message: `Number of accounts successfully updated: ${count} `})
         })
