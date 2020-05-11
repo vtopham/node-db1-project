@@ -35,12 +35,19 @@ server.get('/accounts/:id', (req, res) =>{
 })
 
 //create a new account
-server.post('/accounts', (req, res) =>{
-
+server.post('/accounts', validateAccount, (req, res) =>{
+    db('accounts')
+        .insert(req.body, "id")
+        .then(id => {
+            res.status(201).json({message: `record ${id} successfully created`})
+        })
+        .catch(err => {
+            res.status(500).json({message: 'Error creating account'})
+        })
 })
 
 //update an existing account
-server.put('/accounts/:id', (req, res) =>{
+server.put('/accounts/:id', validateAccount, (req, res) =>{
 
 })
 
@@ -48,4 +55,15 @@ server.put('/accounts/:id', (req, res) =>{
 server.delete('/accounts/:id', (req, res) =>{
 
 })
+
+//check to make sure the body of the request is valid
+function validateAccount (req, res, next) {
+    if (req.body.name && req.body.budget) {
+        next();
+    } else {
+        res.status(400).json({message: "Please include a name and budget in the body of your request."})
+    }
+}
+
+
 module.exports = server;
